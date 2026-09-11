@@ -2,29 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light; }
-* { box-sizing: border-box; }
-html { background: #ece9df; }
-body { margin: 0; color: #1e2a28; background: #f6f3ea; -webkit-font-smoothing: antialiased; }
-button, input, textarea, select { font: inherit; }
-button { -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg-sand: #f6f3ea;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--bg-sand);
+  color: #1e2a28;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
 
 @layer components {
-  .glass { @apply border border-white/70 bg-white/65 shadow-glass backdrop-blur-xl; }
-  .glass-dark { @apply border border-white/15 bg-ink/75 text-white shadow-glass backdrop-blur-xl; }
-  .pill { @apply rounded-full px-4 py-2 text-sm font-medium transition active:scale-95; }
-  .page-pad { @apply px-5; }
-  .eyebrow { @apply text-[11px] font-bold uppercase tracking-[0.18em] text-forest-500; }
+  /* 玻璃拟态卡片 */
+  .glass {
+    @apply border border-white/60 bg-white/65 shadow-glass backdrop-blur-xl;
+  }
+  .glass-deep {
+    @apply border border-white/50 bg-white/50 shadow-glass backdrop-blur-2xl;
+  }
+  /* 胶囊按钮 */
+  .pill {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-medium transition-all active:scale-95;
+  }
+  .pill-primary {
+    @apply pill bg-gradient-to-br from-lake-600 to-lake-400 px-6 py-3 text-white shadow-glass;
+  }
+  .pill-coral {
+    @apply pill bg-gradient-to-br from-coral-500 to-coral-400 px-6 py-3 text-white shadow-glass;
+  }
+  .pill-ghost {
+    @apply pill border border-ink-700/15 bg-white/60 px-5 py-2.5 text-ink-600;
+  }
+  .input-base {
+    @apply w-full rounded-2xl border border-ink-700/10 bg-white/70 px-4 py-3 text-[15px] text-ink-700 placeholder-ink-300 outline-none backdrop-blur transition focus:border-lake-500 focus:ring-2 focus:ring-lake-200;
+  }
 }
 
-.grain::after {
-  content: ""; position: absolute; inset: 0; opacity: .1; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E");
+/* 隐藏滚动条但保留滚动 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { scrollbar-width: none; }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-@media (min-width: 768px) {
-  body { background: radial-gradient(circle at 10% 10%, #cce2df 0, transparent 35%), radial-gradient(circle at 90% 80%, #f6d9c8 0, transparent 30%), #ece9df; }
+/* Markdown 渲染基础样式（攻略详情页） */
+.md-body h2 {
+  @apply mb-3 mt-6 text-lg font-bold text-ink-700;
 }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+.md-body h3 {
+  @apply mb-2 mt-5 text-base font-semibold text-ink-700;
+}
+.md-body p {
+  @apply mb-3 text-[15px] leading-7 text-ink-500;
+}
+.md-body li {
+  @apply mb-1.5 ml-5 list-disc text-[15px] leading-7 text-ink-500;
+}
+.md-body strong {
+  @apply font-semibold text-ink-700;
+}
+.md-body blockquote {
+  @apply my-3 rounded-r-xl border-l-4 border-lake-400 bg-lake-50 px-4 py-2 text-[14px] italic text-ink-500;
+}

@@ -1,5 +1,17 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { summaryPrompt } from "@/lib/ai/prompts";
 import { NextResponse } from "next/server";
+import { generateSummary } from "@/lib/ai/claude";
 
-export async function POST(request: Request){const {content=""}=await request.json().catch(()=>({}));if(!process.env.ANTHROPIC_API_KEY)return NextResponse.json({summary:["路线节奏轻松","包含交通与预算提示","适合朋友结伴出发"],source:"mock"});try{const client=new Anthropic({apiKey:process.env.ANTHROPIC_API_KEY});const message=await client.messages.create({model:"claude-3-5-haiku-latest",max_tokens:300,system:summaryPrompt,messages:[{role:"user",content:String(content).slice(0,12000)}]});const block=message.content.find(b=>b.type==="text");const text=block&&block.type==="text"?block.text:"[]";return NextResponse.json({summary:JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g,"")),source:"claude"})}catch{return NextResponse.json({summary:["值得收藏的旅行灵感"],source:"fallback"})}}
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const markdown = String(body.markdown ?? "");
+    if (!markdown.trim()) {
+      return NextResponse.json({ error: "内容为空" }, { status: 400 });
+    }
+    const result = await generateSummary(markdown);
+    return NextResponse.json(result);
+  } catch (err) {
+    console.error("[api/ai/summary]", err);
+    return NextResponse.json({ error: "摘要生成失败" }, { status: 500 });
+  }
+}
